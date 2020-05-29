@@ -43,7 +43,7 @@ const renderCycle = async (
             _.values(telemetryRef.current.performance),
             (acc, next) => {
               return {
-                componentCount: acc.componentCount + next.count,
+                componentCount: acc.componentCount + next.instances,
                 renderComponentTime: acc.renderComponentTime + next.msTotal,
               };
             },
