@@ -54,6 +54,7 @@ function generateDeclarationReference(
   media: string = '',
   support: string = '',
 ): string {
+  // This a single perf change here, it removes `camelCaseProperty()` call
   return support + media + pseudo + property + value;
 }
 
@@ -61,15 +62,12 @@ function generateDeclarationReference(
 
 export default function felaPerformanceEnhancer(renderer) {
   renderer._renderStyleToClassNames = function _renderStyleToClassNames(
-    // Perf note:
-    // { _className, ...style }: Object,
-    // This thing will be compliled by Babel to use helper, not the best perf decision
-    style: ICSSInJSStyle,
+    { _className, ...style }: any,
     pseudo: string = '',
     media: string = '',
     support: string = '',
   ): string {
-    let classNames = '';
+    let classNames = _className ? ' ' + _className : '';
 
     for (const property in style) {
       const value = style[property];
@@ -96,9 +94,7 @@ Check http://fela.js.org/docs/basics/Rules.html#styleobject for more information
       } else {
         const declarationReference = generateDeclarationReference(property, value, pseudo, media, support);
 
-        // Perf note:
-        // .hasOwnProperty() is slower than just object lookup
-        if (!renderer.cache[declarationReference]) {
+        if (!renderer.cache.hasOwnProperty(declarationReference)) {
           // we remove undefined values to enable
           // usage of optional props without side-effects
           if (isUndefinedValue(value)) {
