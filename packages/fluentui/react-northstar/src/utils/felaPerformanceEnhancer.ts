@@ -1,4 +1,3 @@
-import { ICSSInJSStyle } from '@fluentui/styles';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import cssifyDeclaration from 'css-in-js-utils/lib/cssifyDeclaration';
 import {
